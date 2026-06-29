@@ -1,394 +1,62 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HH.ru Parser - Панель управления</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+⚙️ Установка и запуск1️⃣ Предварительные требованияУбедитесь, что у вас установлен Node.js версии 16.x или выше.Bashnode -v
+2️⃣ Клонирование и установка зависимостейСклонируйте репозиторий и установите необходимые NPM-пакеты:Bashnpm install
+3️⃣ Инициализация окружения PlaywrightУстановите бинарные файлы браузера Chromium для Playwright:Bashnpx playwright install chromium
+4️⃣ Запуск парсераЗапустите главный скрипт для сбора данных и генерации отчета:Bashnode main.js
+После успешного выполнения в корневой директории проекта появится файл: hh_top_companies.xlsx.📄 Структура Excel-отчетаСгенерированный файл hh_top_companies.xlsx содержит две логические вкладки:📑 Лист 1 — "Компании"КолонкаОписаниеКомпанияНазвание организации, разместившей вакансии.Количество вакансийОбщее число открытых позиций, найденных в ходе парсинга (сортировка от большего к меньшему).Примечание: Лист содержит строго Топ-20 компаний по числу открытых вакансий.📑 Лист 2 — "Вакансии"КолонкаОписаниеНазваниеНаименование вакансии / должности.КомпанияРаботодатель.ЗарплатаУказанный уровень дохода (или "Не указана").СсылкаПрямая ссылка на вакансию на hh.ru.Важно: Этот лист автоматически фильтруется и включает в себя вакансии только тех компаний, которые вошли в Топ-20.🔧 КонфигурацияВы можете гибко настраивать параметры парсинга в файле src/services/parser.service.js:Изменение целевого региона и глубины поиска:JavaScript// area=113 — регион (например, Россия/РФ), page — номер страницы
+const BASE_URL = '[https://hh.ru/search/vacancy?area=113&page=](https://hh.ru/search/vacancy?area=113&page=)';
+const MAX_PAGES = 5; // Количество страниц для обхода
+Отладка и визуализация (Режим Headful):Чтобы наблюдать за действиями робота в реальном времени, отключите скрытый режим:JavaScriptconst browser = await chromium.launch({ headless: false });
+🧠 Архитектура приложенияПроект спроектирован по принципу разделения обязанностей (Separation of Concerns):Parser Service — изолированный слой для взаимодействия с DOM-деревом Headless-браузера. Отвечает только за сбор сырых данных.Stats Service — ядро аналитики. Выполняет группировку (group by), сортировку и фильтрацию полученных массивов данных.Excel Service — слой представления. Отвечает за мапинг данных в таблицы, стилизацию колонок и запись файла на диск.Main Module — диспетчер, управляющий жизненным циклом приложения и передающий потоки данных между сервисами.Преимущества такой архитектуры:💡 Масштабируемость: Легко заменить Playwright на API-запросы или добавить новую БД без переписывания аналитики.🛠 Тестируемость: Каждый сервис можно покрыть Unit-тестами независимо друг от друга.⚠️ Важно (Disclaimer)Данный проект разработан исключительно в образовательных и ознакомительных целях для демонстрации навыков автоматизации.Обратите внимание, что агрессивный парсинг сайтов без соблюдения задержек может привести к:Блокировке вашего IP-адреса.Появлению капчи (CAPTCHA).Ограничению доступа к ресурсу.В коде базово реализованы микро-задержки между переключениями страниц для снижения нагрузки на сервер.📌 Перспективные улучшения (Roadmap)[ ] Добавить поддержку динамической ротации прокси-серверов.[ ] Реализовать полноценный CLI-интерфейс для ввода ключевых слов и регионов через консоль.[ ] Интегрировать продвинутое логирование с помощью библиотеки winston.[ ] Конфигурировать чувствительные данные через файл .env.[ ] Добавить Dockerfile для быстрой контейнеризации приложения.[ ] Настроить сохранение результатов в СУБД (PostgreSQL / MongoDB) вместо или вместе с Excel.👨‍💻 АвторПроект создан в учебных целях для демонстрации практических навыков:Написания стабильных скриптов автоматизации на Playwright.Агрегации и сложной трансформации массивов данных в Node.js.Проектирования расширяемой модульной архитектуры.Генерации красивой офисной отчетности программным путем."""with open("README.md", "w", encoding="utf-8") as f:f.write(readme_content)print("README.md written successfully.")Я переработал и структурировал ваш текст в профессиональный, красивый и готовый для GitHub файл `README.md`. Текст оформлен по всем стандартам опенсорс-проектов: добавлены таблицы, правильная подсветка синтаксиса для структуры папок, понятные списки и иконки.
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
+Ваш файл README для GitHub готов:
+[file-tag: code-generated-file-0-1782771233050853002]
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+Ниже вы можете скопировать этот текст в разметке Markdown напрямую для вашего репозитория:
 
-        .header {
-            background: white;
-            border-radius: 16px;
-            padding: 30px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
+```markdown
+# 📊 HH.ru Vacancy Scraper & Analyzer
 
-        h1 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 32px;
-        }
+Автоматизированный скрипт на **Node.js** для парсинга вакансий с hh.ru, глубокого анализа рынка и формирования детализированного Excel‑отчета с Топ‑20 компаниями по количеству открытых вакансий.
 
-        .subtitle {
-            color: #666;
-            font-size: 16px;
-        }
+---
 
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
-        }
+## 🚀 Возможности
 
-        .stat-card {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
+* **Парсинг данных нового поколения**: Сбор информации с помощью **Playwright** с обходом базовых защит.
+* **Экстракция ключевых полей**: Название вакансии, компания, уровень заработной платы, прямая ссылка.
+* **Умная аналитика**: Автоматический подсчет вакансий по работодателям и выявление **Топ-20 лидеров рынка**.
+* **Двухстраничный Excel-отчет**: Экспорт структурированных данных в формат `.xlsx` с разделением на аналитику и сырые данные.
+* **Архитектурный подход**: Чистая модульная архитектура (Service Layer), готовая к масштабированию и тестированию.
 
-        .stat-value {
-            font-size: 36px;
-            font-weight: bold;
-            color: #667eea;
-            margin-bottom: 5px;
-        }
+---
 
-        .stat-label {
-            color: #666;
-            font-size: 14px;
-        }
+## 🛠 Технологический стек
 
-        .actions {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
+* **Runtime:** Node.js (v16+)
+* **Scraping Engine:** Playwright (Chromium)
+* **Data Export:** ExcelJS
+* **Language:** JavaScript (ES6+)
 
-        .btn {
-            background: white;
-            border: none;
-            border-radius: 12px;
-            padding: 20px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+---
 
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-        }
+## 📁 Структура проекта
 
-        .btn:active {
-            transform: translateY(0);
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
-            color: #333;
-        }
-
-        .btn-info {
-            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-            color: #333;
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .icon {
-            font-size: 24px;
-        }
-
-        .content {
-            background: white;
-            border-radius: 16px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            margin-bottom: 20px;
-        }
-
-        .table-container {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #eee;
-        }
-
-        th {
-            background: #f8f9fa;
-            font-weight: 600;
-            color: #333;
-        }
-
-        tr:hover {
-            background: #f8f9fa;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-            background: #667eea;
-            color: white;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #666;
-        }
-
-        .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #667eea;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .alert {
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .alert-info {
-            background: #d1ecf1;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
-        }
-
-        .alert-warning {
-            background: #fff3cd;
-            color: #856404;
-            border: 1px solid #ffeaa7;
-        }
-
-        a {
-            color: #667eea;
-            text-decoration: none;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1> HH.ru Parser</h1>
-            <p class="subtitle">Панель управления парсером вакансий и компаний</p>
-        </div>
-
-        <div class="stats">
-            <div class="stat-card">
-                <div class="stat-value" id="companiesCount">0</div>
-                <div class="stat-label">Компаний в базе</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="vacanciesCount">0</div>
-                <div class="stat-label">Вакансий в базе</div>
-            </div>
-        </div>
-
-        <div id="alerts"></div>
-
-        <div class="actions">
-            <button class="btn btn-primary" onclick="startParsing()">
-                <span class="icon">🔍</span>
-                <span>Запустить парсинг</span>
-            </button>
-            <button class="btn btn-success" onclick="exportExcel()">
-                <span class="icon">📊</span>
-                <span>Экспорт в Excel</span>
-            </button>
-            <button class="btn btn-info" onclick="loadTopCompanies()">
-                <span class="icon">🏆</span>
-                <span>Показать топ-20</span>
-            </button>
-        </div>
-
-        <div class="content">
-            <h2 id="contentTitle">Топ-20 компаний</h2>
-            <div id="contentArea">
-                <div class="loading">
-                    <p>Нажмите "Показать топ-20" для загрузки данных</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const API_URL = window.location.origin;
-
-        // Загрузка статистики при загрузке страницы
-        async function loadStats() {
-            try {
-                const response = await fetch(`${API_URL}/api/stats`);
-                const data = await response.json();
-                
-                document.getElementById('companiesCount').textContent = data.companies;
-                document.getElementById('vacanciesCount').textContent = data.vacancies;
-            } catch (error) {
-                console.error('Ошибка загрузки статистики:', error);
-            }
-        }
-
-        // Запуск парсинга
-        async function startParsing() {
-            if (!confirm('Запустить парсинг? Это может занять 10-30 минут.')) {
-                return;
-            }
-
-            showAlert('Парсинг запущен в фоновом режиме. Это займет 10-30 минут. Следите за прогрессом в консоли сервера.', 'info');
-
-            try {
-                const response = await fetch(`${API_URL}/api/parse`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ area: '113' })
-                });
-
-                const data = await response.json();
-                showAlert(data.message, 'success');
-
-                // Обновляем статистику каждые 10 секунд
-                const interval = setInterval(loadStats, 10000);
-                
-                // Останавливаем через 30 минут
-                setTimeout(() => clearInterval(interval), 30 * 60 * 1000);
-            } catch (error) {
-                showAlert('Ошибка запуска парсинга: ' + error.message, 'warning');
-            }
-        }
-
-        // Экспорт в Excel
-        async function exportExcel() {
-            try {
-                showAlert('Генерация Excel файла...', 'info');
-                
-                window.location.href = `${API_URL}/api/export/excel`;
-                
-                setTimeout(() => {
-                    showAlert('Excel файл загружен!', 'success');
-                }, 1000);
-            } catch (error) {
-                showAlert('Ошибка экспорта: ' + error.message, 'warning');
-            }
-        }
-
-        // Загрузка топ-20 компаний
-        async function loadTopCompanies() {
-            const contentArea = document.getElementById('contentArea');
-            contentArea.innerHTML = '<div class="loading"><div class="spinner"></div><p>Загрузка данных...</p></div>';
-
-            try {
-                const response = await fetch(`${API_URL}/api/companies/top`);
-                const data = await response.json();
-
-                if (data.companies.length === 0) {
-                    contentArea.innerHTML = '<div class="loading"><p>Нет данных. Запустите парсинг.</p></div>';
-                    return;
-                }
-
-                let html = '<div class="table-container"><table>';
-                html += '<thead><tr>';
-                html += '<th>#</th>';
-                html += '<th>Компания</th>';
-                html += '<th>Вакансий</th>';
-                html += '<th>Город</th>';
-                html += '<th>Ссылка</th>';
-                html += '</tr></thead><tbody>';
-
-                data.companies.forEach((company, index) => {
-                    html += '<tr>';
-                    html += `<td>${index + 1}</td>`;
-                    html += `<td><strong>${company.name}</strong></td>`;
-                    html += `<td><span class="badge">${company.vacanciesCount}</span></td>`;
-                    html += `<td>${company.area || '-'}</td>`;
-                    html += `<td><a href="${company.url}" target="_blank">Открыть на HH.ru</a></td>`;
-                    html += '</tr>';
-                });
-
-                html += '</tbody></table></div>';
-                contentArea.innerHTML = html;
-
-                showAlert(`Загружено ${data.companies.length} компаний`, 'success');
-            } catch (error) {
-                contentArea.innerHTML = '<div class="loading"><p>Ошибка загрузки данных</p></div>';
-                showAlert('Ошибка: ' + error.message, 'warning');
-            }
-        }
-
-        // Показать уведомление
-        function showAlert(message, type = 'info') {
-            const alertsContainer = document.getElementById('alerts');
-            const alert = document.createElement('div');
-            alert.className = `alert alert-${type}`;
-            alert.textContent = message;
-            
-            alertsContainer.innerHTML = '';
-            alertsContainer.appendChild(alert);
-
-            setTimeout(() => {
-                alert.remove();
-            }, 5000);
-        }
-
-        // Инициализация
-        loadStats();
-        setInterval(loadStats, 30000); // Обновляем статистику каждые 30 секунд
-    </script>
-</body>
-</html>
-#   h r p r i m e  
- 
+```text
+hh-scraper/
+├── src/
+│   └── services/
+│       ├── parser.service.js   # Модуль парсинга и взаимодействия с браузером
+│       ├── stats.service.js    # Бизнес-логика, агрегация и фильтрация данных
+│       └── excel.service.js    # Генерация форматированного отчета Excel
+├── main.js                 # Точка входа, оркестратор процессов
+├── package.json            # Зависимости и скрипты проекта
+└── README.md               # Документация проекта
+⚙️ Установка и запуск1️⃣ Предварительные требованияУбедитесь, что у вас установлен Node.js версии 16.x или выше.Bashnode -v
+2️⃣ Клонирование и установка зависимостейСклонируйте репозиторий и установите необходимые NPM-пакеты:Bashnpm install
+3️⃣ Инициализация окружения PlaywrightУстановите бинарные файлы браузера Chromium для Playwright:Bashnpx playwright install chromium
+4️⃣ Запуск парсераЗапустите главный скрипт для сбора данных и генерации отчета:Bashnode main.js
+После успешного выполнения в корневой директории проекта появится файл: hh_top_companies.xlsx.📄 Структура Excel-отчетаСгенерированный файл hh_top_companies.xlsx содержит две логические вкладки:📑 Лист 1 — "Компании"КолонкаОписаниеКомпанияНазвание организации, разместившей вакансии.Количество вакансийОбщее число открытых позиций, найденных в ходе парсинга (сортировка от большего к меньшему).Примечание: Лист содержит строго Топ-20 компаний по числу открытых вакансий.📑 Лист 2 — "Вакансии"КолонкаОписаниеНазваниеНаименование вакансии / должности.КомпанияРаботодатель.ЗарплатаУказанный уровень дохода (или "Не указана").СсылкаПрямая ссылка на вакансию на hh.ru.Важно: Этот лист автоматически фильтруется и включает в себя вакансии только тех компаний, которые вошли в Топ-20.🔧 КонфигурацияВы можете гибко настраивать параметры парсинга в файле src/services/parser.service.js:Изменение целевого региона и глубины поиска:JavaScript// area=113 — регион (например, Россия/РФ), page — номер страницы
+const BASE_URL = '[https://hh.ru/search/vacancy?area=113&page=](https://hh.ru/search/vacancy?area=113&page=)';
+const MAX_PAGES = 5; // Количество страниц для обхода
+Отладка и визуализация (Режим Headful):Чтобы наблюдать за действиями робота в реальном времени, отключите скрытый режим:JavaScriptconst browser = await chromium.launch({ headless: false });
+🧠 Архитектура приложенияПроект спроектирован по принципу разделения обязанностей (Separation of Concerns):Parser Service — изолированный слой для взаимодействия с DOM-деревом Headless-браузера. Отвечает только за сбор сырых данных.Stats Service — ядро аналитики. Выполняет группировку (group by), сортировку и фильтрацию полученных массивов данных.Excel Service — слой представления. Отвечает за мапинг данных в таблицы, стилизацию колонок и запись файла на диск.Main Module — диспетчер, управляющий жизненным циклом приложения и передающий потоки данных между сервисами.Преимущества такой архитектуры:💡 Масштабируемость: Легко заменить Playwright на API-запросы или добавить новую БД без переписывания аналитики.🛠 Тестируемость: Каждый сервис можно покрыть Unit-тестами независимо друг от друга.⚠️ Важно (Disclaimer)Данный проект разработан исключительно в образовательных и ознакомительных целях для демонстрации навыков автоматизации.Обратите внимание, что агрессивный парсинг сайтов без соблюдения задержек может привести к:Блокировке вашего IP-адреса.Появлению капчи (CAPTCHA).Ограничению доступа к ресурсу.В коде базово реализованы микро-задержки между переключениями страниц для снижения нагрузки на сервер.📌 Перспективные улучшения (Roadmap)[ ] Добавить поддержку динамической ротации прокси-серверов.[ ] Реализовать полноценный CLI-интерфейс для ввода ключевых слов и регионов через консоль.[ ] Интегрировать продвинутое логирование с помощью библиотеки winston.[ ] Конфигурировать чувствительные данные через файл .env.[ ] Добавить Dockerfile для быстрой контейнеризации приложения.[ ] Настроить сохранение результатов в СУБД (PostgreSQL / MongoDB) вместо или вместе с Excel.👨‍💻 АвторПроект создан в учебных целях для демонстрации практических навыков:Написания стабильных скриптов автоматизации на Playwright.Агрегации и сложной трансформации массивов данных в Node.js.Проектирования расширяемой модульной архитектуры.Генерации красивой офисной отчетности программным путем.
