@@ -108,6 +108,9 @@ const MAX_PAGES = 5; // Количество страниц для обхода
 ```JavaScript
 const browser = await chromium.launch({ headless: false });
 ```
+
+---
+
 ## Архитектура приложения
 
 Проект спроектирован по принципу разделения обязанностей (Separation of Concerns):
